@@ -1,0 +1,7 @@
+plugins {
+    `kotlin-common-convention`
+}
+
+dependencies {
+   api("it.unibo.tuprolog:core-jvm:0.20.4")
+}

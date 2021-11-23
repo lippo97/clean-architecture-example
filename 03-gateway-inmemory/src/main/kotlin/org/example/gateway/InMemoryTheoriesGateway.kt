@@ -7,7 +7,6 @@ import org.example.Theory
 
 class InMemoryDatabase {
     val theories: List<Theory> = listOf(
-
             Theory(listOf(Fact.of(
                     Atom.of("hello")),
                     Fact.of(Atom.of("hi"))

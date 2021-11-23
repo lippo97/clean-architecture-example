@@ -1,6 +1,6 @@
 rootProject.name = "clean-architecture-example"
-include("domain")
-include("core")
-include("delivery")
-include("main")
-include("gateway-in-memory")
+include("01-domain")
+include("02-core")
+include("03-gateway-inmemory")
+include("03-delivery-vertx")
+include("04-main-vertx-inmemory")

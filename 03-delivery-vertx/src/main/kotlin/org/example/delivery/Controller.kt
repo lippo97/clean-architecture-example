@@ -5,8 +5,8 @@ import io.vertx.ext.web.Route
 import io.vertx.ext.web.Router
 import it.unibo.tuprolog.serialize.MimeType
 import it.unibo.tuprolog.serialize.TheorySerializer
-import org.example.GetTheoriesUseCase
 import org.example.gateway.TheoriesGateway
+import org.example.usecases.GetTheoriesUseCase
 
 fun interface Controller {
     fun routes(): Router

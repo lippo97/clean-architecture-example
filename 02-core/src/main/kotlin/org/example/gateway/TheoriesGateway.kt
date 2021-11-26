@@ -1,6 +1,6 @@
 package org.example.gateway
 
-import org.example.Theory
+import it.unibo.tuprolog.theory.Theory
 
 interface TheoriesGateway {
     fun getTheories(): List<Theory>

@@ -1,4 +1,4 @@
-package org.example.usecases.data
+package org.example.entities
 
 /**
  * A Prolog composed goal.
@@ -11,8 +11,8 @@ package org.example.usecases.data
  * @property subGoals The [SubGoal]s the goal is composed of.
  */
 data class Goal(
-    val name: String,
-    val subGoals: List<SubGoal>,
+        val name: String,
+        val subGoals: List<SubGoal>,
 )
 
 /**
@@ -21,5 +21,5 @@ data class Goal(
  * @property value The sub-goal Prolog source code.
  */
 data class SubGoal(
-    val value: Prolog,
+        val value: Prolog,
 )

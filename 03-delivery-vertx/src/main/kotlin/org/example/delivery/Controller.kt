@@ -1,12 +1,13 @@
 package org.example.delivery
 
 import io.vertx.core.Vertx
-import io.vertx.ext.web.Route
+import io.vertx.core.json.Json
 import io.vertx.ext.web.Router
-import it.unibo.tuprolog.serialize.MimeType
-import it.unibo.tuprolog.serialize.TheorySerializer
+import io.vertx.ext.web.handler.BodyHandler
+import io.vertx.kotlin.core.json.get
+import org.example.entities.Theory
 import org.example.gateway.TheoriesGateway
-import org.example.usecases.GetTheoriesUseCase
+import org.example.usecases.TheoriesUseCases
 
 fun interface Controller {
     fun routes(): Router
@@ -15,27 +16,34 @@ fun interface Controller {
 
         @JvmStatic
         fun of(vertx: Vertx, theoriesGateway: TheoriesGateway): Controller = Controller {
+            val theoriesUseCase = TheoriesUseCases(theoriesGateway)
             Router.router(vertx).apply {
                 get("/theories").handler { ctx ->
-                    // val role = ctx.getHeaders()['Authentication']['role']
-                    // permissionManager(role, CONFIGURATOR) {
-                    //   val theories = GetTheoriesUseCase(theoriesGateway).getTheories()
-                    //   ctx.response()
-                    //      .end(TheorySerializer.of(MimeType.Json).serializeMany(theories))
-                    // }
-                    val theories = GetTheoriesUseCase(theoriesGateway).getTheories()
+                    val theories = theoriesUseCase.makeGetAllTheories.execute(Unit)
                     ctx.response()
-                        .end(TheorySerializer.of(MimeType.Json).serializeMany(theories))
+                        .end(Json.encodePrettily(theories))
                 }
 
-                get("/theories/ws").handler { ctx ->
-                    val theories = GetTheoriesUseCase(theoriesGateway).getTheories()
-                    vertx.createHttpServer().webSocketHandler()
+                get("/theories/:name").handler { ctx ->
+                    val theoryName = ctx.pathParam("name")
+                    val theories = theoriesUseCase.makeGetTheoryByName.execute(theoryName)
+                    ctx.response()
+                        .end(Json.encodePrettily(theories))
                 }
 
-                post("/theories").handler { ctx ->
-                    ctx.parsedHeaders()
-                }
+                post("/theories")
+                    .handler(BodyHandler.create())
+                    .handler { ctx ->
+                        val body = ctx.bodyAsJson
+                        val result = theoriesUseCase.makeCreateTheory.execute(
+                            Theory(
+                                name = body["name"],
+                                value = body["value"]
+                            )
+                        )
+                        ctx.response()
+                            .end(Json.encodePrettily(result))
+                    }
             }
         }
 

@@ -1,4 +1,4 @@
-package org.example.usecases.data
+package org.example.entities
 
 /**
  * It represents the resolution of a [Goal] on a specific [Theory].
@@ -7,6 +7,6 @@ package org.example.usecases.data
  * @property theory The theory to resolve the goal on.
  */
 data class Query(
-    val goal: Goal,
-    val theory: Theory,
+        val goal: Goal,
+        val theory: Theory,
 )

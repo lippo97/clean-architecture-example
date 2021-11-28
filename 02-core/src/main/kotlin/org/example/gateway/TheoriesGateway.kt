@@ -1,7 +1,15 @@
 package org.example.gateway
 
-import it.unibo.tuprolog.theory.Theory
+import org.example.entities.Theory
 
 interface TheoriesGateway {
-    fun getTheories(): List<Theory>
+
+    fun getTheoriesIndex(): List<String>
+
+    fun getTheoryByName(name: String): Theory? =
+        getTheoriesByName(listOf(name)).firstOrNull()
+
+    fun getTheoriesByName(names: List<String>): List<Theory>
+
+    fun createTheory(theory: Theory): Unit
 }

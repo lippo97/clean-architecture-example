@@ -1,20 +1,30 @@
 package org.example.gateway
 
-import it.unibo.tuprolog.core.Atom
-import it.unibo.tuprolog.core.Clause
-import it.unibo.tuprolog.core.Fact
-import it.unibo.tuprolog.core.Struct
-import it.unibo.tuprolog.theory.Theory
+import org.example.entities.Theory
 
 class InMemoryDatabase {
-    val theories: List<Theory> = listOf(
-        Theory.of(
-            Clause.of(Atom.of("goku") , Atom.of("mario")),
-            Clause.of(Atom.of("mario"), Atom.of("luigi")),
-        )
+    private val defaultTheory = Theory(
+        name = "default",
+        value = """
+                parent(goku, gohan).
+                parent(goku, goten).
+            """.trimIndent()
+    )
+
+    val theories: MutableMap<String, Theory> = mutableMapOf(
+        Pair("default", defaultTheory)
     )
 }
 
 class InMemoryTheoriesGateway(private val inMemoryDatabase: InMemoryDatabase) : TheoriesGateway {
-    override fun getTheories(): List<Theory> = inMemoryDatabase.theories
+    override fun getTheoriesIndex(): List<String> =
+        inMemoryDatabase.theories.keys.toList()
+
+    override fun getTheoriesByName(names: List<String>): List<Theory> =
+        inMemoryDatabase.theories.entries
+            .filter { names.contains(it.key) }
+            .map { it.value }
+
+    override fun createTheory(theory: Theory): Unit =
+        inMemoryDatabase.theories.put(theory.name, theory).let { }
 }

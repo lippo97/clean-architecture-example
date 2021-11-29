@@ -20,8 +20,16 @@ fun interface Controller {
             Router.router(vertx).apply {
                 get("/theories").handler { ctx ->
                     val theories = theoriesUseCase.makeGetAllTheories.execute(Unit)
-                    ctx.response()
-                        .end(Json.encodePrettily(theories))
+                    theories.fold(
+                        ifLeft = {
+
+                        },
+                        ifRight = {
+                            ctx.response()
+                                .end(Json.encodePrettily(it))
+                        }
+                    )
+
                 }
 
                 get("/theories/:name").handler { ctx ->

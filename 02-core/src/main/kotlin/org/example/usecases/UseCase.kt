@@ -1,14 +1,19 @@
 package org.example.usecases
 
-interface UseCase<in Input, out Output> {
-    fun execute(input: Input): Output
+import arrow.core.Either
+
+interface UseCase<in Input, out Exception ,out Output> {
+    fun execute(input: Input): Either<Exception, Output>
 
     fun tag(): String
 
     companion object {
-        fun <Input, Output>of(tag: String, execute: (Input) -> Output): UseCase<Input, Output> =
-            object : UseCase<Input, Output> {
-                override fun execute(input: Input): Output = execute(input)
+        fun <Input, Exception, Output>of(
+            tag: String,
+            execute: (Input) -> Either<Exception, Output>,
+        ): UseCase<Input, Exception, Output> =
+            object : UseCase<Input, Exception, Output> {
+                override fun execute(input: Input): Either<Exception, Output> = execute(input)
                 override fun tag(): String = tag
             }
     }

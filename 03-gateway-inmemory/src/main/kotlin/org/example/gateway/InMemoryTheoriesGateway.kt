@@ -1,10 +1,9 @@
 package org.example.gateway
 
-import arrow.core.Either
-import arrow.core.right
+import arrow.core.*
 import org.example.UCException
-import org.example.UCException.NotFoundException
 import org.example.UCException.DuplicateIdentifierException
+import org.example.UCException.NotFoundException
 import org.example.entities.Prolog
 import org.example.entities.Theory
 import java.time.Instant
@@ -18,16 +17,29 @@ private val defaultTheory = Theory(
 )
 
 data class InMemoryDatabase(
-    val theories: Map<String, Theory> = mapOf("default" to defaultTheory)
+    val theories: Map<String, NonEmptyList<Theory>> = mapOf("default" to nonEmptyListOf(defaultTheory))
 )
 
 class InMemoryTheoriesGateway(private var inMemoryDatabase: InMemoryDatabase) : TheoriesGateway {
-    override suspend fun getTheoriesIndex(): Either<Nothing, List<String>> =
-        inMemoryDatabase.theories.keys.toList().right()
+    override suspend fun getTheoriesIndex(): Either<Nothing, List<Pair<String, Int>>> =
+        inMemoryDatabase.theories
+            .toList()
+            .combinations()
+            .right()
+
+    override suspend fun getTheoriesIndex(name: String): Either<NotFoundException, List<Pair<String, Int>>> =
+        Either.fromNullable(
+            inMemoryDatabase.theories
+                .toList()
+                .find { it.first == name }
+        )
+            .mapLeft { NotFoundException(name, "Couldn't find Theory named $name.") }
+            .map {
+                nonEmptyListOf(it).combinations()
+            }
 
     override suspend fun getTheoryByName(name: String): Either<NotFoundException, Theory> =
-        Either.fromNullable(inMemoryDatabase.theories[name])
-            .mapLeft { NotFoundException(name, "Couldn't find Theory named $name.") }
+        getTheoriesFromDatabase(name).map { it.last() }
 
     override suspend fun createTheory(name: String, value: Prolog): Either<DuplicateIdentifierException, Theory> =
         getTheoryByName(name).swap()
@@ -43,10 +55,32 @@ class InMemoryTheoriesGateway(private var inMemoryDatabase: InMemoryDatabase) : 
         getTheoryByName(name)
             .tap(::deleteTheoryFromDatabase)
 
+    override suspend fun getTheoryByNameAndVersion(name: String, version: Int): Either<NotFoundException, Theory> =
+        getTheoriesFromDatabase(name)
+            .flatMap { theories ->
+                Either.fromNullable(theories.find { it.version == version })
+            }
+            .mapLeft { NotFoundException(name, "Couldn't find Theory named $name at version $version.") }
+
+
+    private fun List<Pair<String, NonEmptyList<Theory>>>.combinations(): List<Pair<String, Int>> =
+        this.toList()
+            .flatMap { (key, theories) ->
+                theories.map { Pair(key, it.version) }
+            }
+
+    private fun getTheoriesFromDatabase(name: String): Either<NotFoundException, NonEmptyList<Theory>> =
+        Either.fromNullable(inMemoryDatabase.theories[name])
+            .mapLeft { NotFoundException(name, "Couldn't find Theory named $name.") }
+
+
     private fun updateTheoriesDatabase(theory: Theory): Theory =
         theory.apply {
-            inMemoryDatabase = inMemoryDatabase
-                .copy(theories = inMemoryDatabase.theories + (name to this))
+            inMemoryDatabase = inMemoryDatabase.run {
+                copy(theories = theories +
+                    (name to
+                        (theories[name]?.plus(theory) ?: nonEmptyListOf(theory))))
+            }
         }
 
     private fun deleteTheoryFromDatabase(theory: Theory) {

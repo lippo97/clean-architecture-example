@@ -1,4 +1,5 @@
 rootProject.name = "clean-architecture-example"
+include("00-utils")
 include("01-domain")
 include("02-core")
 include("02-serialization")

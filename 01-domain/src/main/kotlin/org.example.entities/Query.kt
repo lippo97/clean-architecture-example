@@ -7,6 +7,6 @@ package org.example.entities
  * @property theory The theory to resolve the goal on.
  */
 data class Query(
-        val goal: Goal,
-        val theory: Theory,
+    val goal: Goal,
+    val theory: Theory,
 )

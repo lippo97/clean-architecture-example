@@ -1,7 +1,8 @@
 plugins {
-  `kotlin-common-convention`
+    `kotlin-common-convention`
 }
 
 dependencies {
-  implementation(project(":01-domain"))
+    implementation(project(":00-utils"))
+    implementation(project(":01-domain"))
 }

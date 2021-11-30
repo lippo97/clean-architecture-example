@@ -11,8 +11,8 @@ import java.time.Instant
  * @property createdAt A temporal indication of the creation instant for the resource.
  */
 data class Theory(
-        val name: String,
-        val value: Prolog,
-        val version: Version = 0,
-        val createdAt: Instant = Instant.now(),
+    val name: String,
+    val value: Prolog,
+    val version: Version = 0,
+    val createdAt: Instant = Instant.now(),
 )

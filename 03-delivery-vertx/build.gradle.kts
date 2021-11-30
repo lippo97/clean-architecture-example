@@ -3,6 +3,7 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":00-utils"))
     implementation(project(":01-domain"))
     implementation(project(":02-core"))
     implementation(project(":02-serialization"))

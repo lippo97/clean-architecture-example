@@ -8,7 +8,9 @@ import org.example.entities.Theory
 
 interface TheoriesGateway {
 
-    suspend fun getTheoriesIndex(): Either<Nothing, List<String>>
+    suspend fun getTheoriesIndex(): Either<Nothing, List<Pair<String, Int>>>
+
+    suspend fun getTheoriesIndex(name: String): Either<NotFoundException, List<Pair<String, Int>>>
 
     suspend fun getTheoryByName(name: String): Either<NotFoundException, Theory>
 
@@ -17,4 +19,6 @@ interface TheoriesGateway {
     suspend fun updateTheory(name: String, value: Prolog): Either<UCException, Theory>
 
     suspend fun deleteTheory(name: String): Either<NotFoundException, Theory>
+
+    suspend fun getTheoryByNameAndVersion(name: String, version: Int): Either<NotFoundException, Theory>
 }

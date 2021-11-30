@@ -12,6 +12,9 @@ dependencies {
     implementation("io.vertx:vertx-core:4.2.1")
     implementation("io.vertx:vertx-lang-kotlin:4.2.1")
     implementation("io.vertx:vertx-web:4.2.1")
+
+    testImplementation("io.vertx:vertx-lang-kotlin:4.2.1")
+    testImplementation("io.vertx:vertx-lang-kotlin-coroutines:4.2.1")
 }
 
 application {

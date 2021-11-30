@@ -35,6 +35,10 @@ fun handleException(ctx: RoutingContext): (ucException: UCException) -> Unit = {
             .setStatusCode(HTTPStatusCode.NOT_FOUND)
             .setStatusMessage(it.msg)
             .end()
+        is UCException.ValidationError -> ctx.response()
+            .setStatusCode(HTTPStatusCode.BAD_REQUEST)
+            .setStatusMessage(it.msg)
+            .end()
     }
 }
 

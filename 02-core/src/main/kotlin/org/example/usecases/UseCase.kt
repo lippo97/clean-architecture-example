@@ -2,34 +2,17 @@ package org.example.usecases
 
 import arrow.core.Either
 
-interface UseCase<in I, out E, out O> {
-    suspend fun execute(input: I): Either<E, O>
-
+interface UseCase<E, A> {
     fun tag(): String
 
+    suspend fun execute(): Either<E, A>
+
     companion object {
-        fun <I, E, O> of(
-            tag: String,
-            execute: suspend (I) -> Either<E, O>,
-        ): UseCase<I, E, O> =
-            object : UseCase<I, E, O> {
-                override suspend fun execute(input: I): Either<E, O> = execute(input)
+        fun <E, A>of(tag: String, execute: suspend () -> Either<E, A>): UseCase<E, A> =
+            object : UseCase<E, A> {
                 override fun tag(): String = tag
+
+                override suspend fun execute(): Either<E, A> = execute()
             }
     }
 }
-
-suspend fun <E, O> UseCase<Unit, E, O>.execute(): Either<E, O> =
-    execute(Unit)
-
-suspend fun <A, B, E, O> UseCase<Pair<A, B>, E, O>.execute(
-    a: A,
-    b: B
-): Either<E, O> = execute(Pair(a, b))
-
-
-suspend fun <A, B, C, E, O> UseCase<Triple<A, B, C>, E, O>.execute(
-    a: A,
-    b: B,
-    c: C,
-): Either<E, O> = execute(Triple(a, b, c))

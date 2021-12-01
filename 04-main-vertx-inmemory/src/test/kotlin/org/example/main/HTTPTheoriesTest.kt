@@ -14,6 +14,7 @@ import io.vertx.kotlin.coroutines.await
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
+import org.example.Dependencies
 import org.example.delivery.Controller
 import org.example.delivery.httpclient.*
 import org.example.gateway.InMemoryDatabase
@@ -40,7 +41,9 @@ class HTTPTheoriesTest : FunSpec({
             val server = vertx.createHttpServer()
             val controller = Controller.of(
                 vertx = vertx,
-                theoriesGateway = InMemoryTheoriesGateway(InMemoryDatabase())
+                dependencies = Dependencies(
+                    theoriesGateway = InMemoryTheoriesGateway(InMemoryDatabase())
+                )
             )
             server
                 .requestHandler(controller.routes())

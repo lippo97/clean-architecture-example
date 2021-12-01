@@ -6,31 +6,24 @@ import org.example.entities.Prolog
 import org.example.entities.Theory
 import org.example.gateway.TheoriesGateway
 
-class TheoriesUseCases(theoriesGateway: TheoriesGateway) {
-    val makeGetAllTheoriesIndex: UseCase<Unit, Nothing, List<Pair<String, Int>>> =
-        UseCase.of("GetAllTheories") { theoriesGateway.getTheoriesIndex() }
+fun TheoriesGateway.getAllTheoriesIndexUseCase(): UseCase<Nothing, List<Pair<String, Int>>> =
+    UseCase.of("GetAllTheories") { getTheoriesIndex() }
 
-    val makeGetAllTheoriesIndexByName: UseCase<String, NotFoundException, List<Pair<String, Int>>> =
-        UseCase.of("GetAllTheories") { theoriesGateway.getTheoriesIndex(it) }
+fun TheoriesGateway.getAllTheoriesIndexUseCase(name: String): UseCase<NotFoundException, List<Pair<String, Int>>> =
+    UseCase.of("GetAllTheories") { getTheoriesIndex(name) }
 
-    val makeGetTheoryByName: UseCase<String, NotFoundException, Theory> =
-        UseCase.of("GetTheoryByName") { theoriesGateway.getTheoryByName(it) }
+fun TheoriesGateway.getTheoryByNameUseCase(name: String): UseCase<NotFoundException, Theory> =
+    UseCase.of("GetTheoryByName") { getTheoryByName(name) }
 
-    val makeCreateTheory: UseCase<Pair<String, Prolog>, UCException, Theory> =
-        UseCase.of("CreateTheory") { (name, value) ->
-            theoriesGateway.createTheory(name, value)
-        }
+fun TheoriesGateway.createTheoryUseCase(name: String, value: Prolog): UseCase<UCException, Theory> =
+    UseCase.of("CreateTheory") { createTheory(name, value) }
 
-    val makeDeleteTheory: UseCase<String, NotFoundException, Theory> =
-        UseCase.of("DeleteTheory", theoriesGateway::deleteTheory)
+fun TheoriesGateway.deleteTheoryUseCase(name: String): UseCase<NotFoundException, Theory> =
+    UseCase.of("DeleteTheory") { deleteTheory(name) }
 
-    val makeUpdateTheory: UseCase<Pair<String, Prolog>, UCException, Theory> =
-        UseCase.of("UpdateTheory") { (name, value) ->
-            theoriesGateway.updateTheory(name, value)
-        }
+fun TheoriesGateway.updateTheoryUseCase(name: String, value: Prolog): UseCase<UCException, Theory> =
+    UseCase.of("UpdateTheory") { updateTheory(name, value) }
 
-    val makeGetTheoryByNameAndVersion: UseCase<Pair<String, Int>, NotFoundException, Theory> =
-        UseCase.of("GetTheoryByNameAndVersion") { (name, version) ->
-            theoriesGateway.getTheoryByNameAndVersion(name, version)
-        }
-}
+fun TheoriesGateway.getTheoryByNameAndVersionUseCase(name: String, version: Int): UseCase<NotFoundException, Theory> =
+    UseCase.of("GetTheoryByNameAndVersion") { getTheoryByNameAndVersion(name, version) }
+

@@ -49,8 +49,7 @@ class HTTPTheoriesTest : FunSpec({
     }
 
     test("The service should be running") {
-        client.request(HttpMethod.GET, 8080, "localhost", "/theories")
-            .flatMap { it.send() }
+        client.get("/theories")
             .map { it.statusCode() }
             .map { it shouldBeExactly 200 }
             .await()
@@ -63,14 +62,6 @@ class HTTPTheoriesTest : FunSpec({
                 it.toJson() shouldBe json { array("/theories/default/versions/0") }
             }
             .await()
-//            .await()
-//        client.request(HttpMethod.GET,8080,"localhost","/theories")
-//            .flatMap { it.send() }
-//            .flatMap { it.body() }
-//            .map {
-//                it.toJson() shouldBe json { array("/theories/default/versions/0") }
-//            }
-//            .await()
     }
 
     context("When a new theory is submitted") {

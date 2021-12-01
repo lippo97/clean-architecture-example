@@ -27,7 +27,7 @@ fun interface Controller {
 
                 post("/theories")
                     .handler(BodyHandler.create())
-                    .coroutineHandlerEither {
+                    .coroutineHandlerEither(successCode = HTTPStatusCode.CREATED) {
                         TheoriesUseCases(theoriesGateway).makeCreateTheory
                             .execute(it.bodyAsJson["name"], it.bodyAsJson["value"])
                     }

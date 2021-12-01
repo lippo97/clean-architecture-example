@@ -1,6 +1,7 @@
 package org.example.delivery
 
 import arrow.core.Either
+import io.vertx.core.json.Json
 import io.vertx.ext.web.Route
 import io.vertx.ext.web.RoutingContext
 import io.vertx.kotlin.coroutines.dispatcher
@@ -29,29 +30,33 @@ fun handleException(ctx: RoutingContext): (ucException: UCException) -> Unit = {
     when (it) {
         is UCException.DuplicateIdentifierException -> ctx.response()
             .setStatusCode(HTTPStatusCode.CONFLICT)
-            .setStatusMessage(it.msg)
-            .end()
+            .end(it.msg)
         is UCException.NotFoundException -> ctx.response()
             .setStatusCode(HTTPStatusCode.NOT_FOUND)
-            .setStatusMessage(it.msg)
-            .end()
+            .end(it.msg)
         is UCException.ValidationError -> ctx.response()
             .setStatusCode(HTTPStatusCode.BAD_REQUEST)
-            .setStatusMessage(it.msg)
-            .end()
+            .end(it.msg)
     }
 }
 
-fun <A> Either<UCException, A>.handleEither(ctx: RoutingContext) {
-    fold(handleException(ctx), ctx::json)
+fun <A> Either<UCException, A>.handleEither(ctx: RoutingContext, successCode: HTTPStatusCode) {
+    fold(handleException(ctx)) {
+        ctx.response()
+            .setStatusCode(successCode)
+            .end(Json.encodeToBuffer(it))
+    }
 }
 
-fun <A> Route.coroutineHandlerEither(routeHandler: suspend (RoutingContext) -> Either<UCException, A>) {
+fun <A> Route.coroutineHandlerEither(
+    successCode: HTTPStatusCode = HTTPStatusCode.OK,
+    routeHandler: suspend (RoutingContext) -> Either<UCException, A>
+) {
     handler {
         GlobalScope.launch(it.vertx().dispatcher()) {
             runCatching {
                 routeHandler(it)
-                    .handleEither(it)
+                    .handleEither(it, successCode)
             }.onFailure(it::fail)
         }
     }

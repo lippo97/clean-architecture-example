@@ -39,7 +39,7 @@ class HTTPTheoriesTest : FunSpec({
             }
             server
                 .requestHandler(controller.routes())
-                .listen(8080).await()
+                .listen(8080)
         }
     }
 

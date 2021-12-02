@@ -1,24 +1,19 @@
 package org.example.main
 
-import arrow.core.getOrElse
-import arrow.core.toOption
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.ints.shouldBeExactly
 import io.kotest.matchers.shouldBe
-import io.vertx.core.Future
 import io.vertx.core.Vertx
-import io.vertx.core.http.*
-import io.vertx.core.json.JsonObject
 import io.vertx.kotlin.core.json.*
 import io.vertx.kotlin.coroutines.await
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
-import org.example.Dependencies
 import org.example.delivery.Controller
+import org.example.delivery.Controller.Companion.makeController
+import org.example.delivery.DependencyGraph
 import org.example.delivery.httpclient.*
 import org.example.gateway.InMemoryDatabase
 import org.example.gateway.InMemoryTheoriesGateway
+import org.example.main.delivery.make
 
 
 class HTTPTheoriesTest : FunSpec({
@@ -39,12 +34,9 @@ class HTTPTheoriesTest : FunSpec({
     beforeAny {
         runTest {
             val server = vertx.createHttpServer()
-            val controller = Controller.of(
-                vertx = vertx,
-                dependencies = Dependencies(
-                    theoriesGateway = InMemoryTheoriesGateway(InMemoryDatabase())
-                )
-            )
+            val controller = with(DependencyGraph.make(vertx)) {
+                makeController()
+            }
             server
                 .requestHandler(controller.routes())
                 .listen(8080).await()

@@ -1,12 +1,6 @@
-plugins {
-    kotlin("jvm") version "1.6.0"
-    `java-library`
-}
-
 allprojects {
-    apply(plugin = "kotlin")
-    apply(plugin = "java-library")
-
+    version = 0.1
+    group = "org.example"
     repositories {
         mavenCentral()
     }

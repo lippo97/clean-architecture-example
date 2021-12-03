@@ -18,7 +18,6 @@ dependencies {
     testImplementation(project(":03-delivery-vertx").dependencyProject.sourceSets.test.get().output)
     testImplementation("io.vertx:vertx-lang-kotlin:4.2.1")
     testImplementation("io.vertx:vertx-lang-kotlin-coroutines:4.2.1")
-
 }
 
 application {

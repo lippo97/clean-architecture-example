@@ -26,4 +26,3 @@ fun TheoriesGateway.updateTheoryUseCase(name: String, value: Prolog): UseCase<UC
 
 fun TheoriesGateway.getTheoryByNameAndVersionUseCase(name: String, version: Int): UseCase<NotFoundException, Theory> =
     UseCase.of("GetTheoryByNameAndVersion") { getTheoryByNameAndVersion(name, version) }
-

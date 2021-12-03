@@ -1,9 +1,7 @@
 package org.example.delivery
 
-import io.vertx.core.Vertx
 import io.vertx.ext.web.Router
 import org.example.delivery.handlers.theoriesRoutes
-import org.example.gateway.TheoriesGateway
 
 fun interface Controller {
     fun routes(): Router

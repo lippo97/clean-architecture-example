@@ -9,7 +9,6 @@ import io.vertx.core.http.HttpMethod
 import io.vertx.core.json.JsonObject
 import io.vertx.kotlin.core.json.Json
 
-
 private fun HttpClient.requestDSL(
     method: HttpMethod,
     requestURI: String,
@@ -31,7 +30,6 @@ fun HttpClient.get(
     body: (Json.() -> JsonObject)? = null
 ): Future<HttpClientResponse> =
     requestDSL(HttpMethod.GET, requestURI, host, port, body)
-
 
 fun HttpClient.post(
     requestURI: String,

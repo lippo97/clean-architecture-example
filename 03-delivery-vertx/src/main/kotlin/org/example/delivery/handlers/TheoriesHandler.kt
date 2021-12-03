@@ -19,7 +19,7 @@ import org.example.utils.either.mapT
 fun TheoriesGateway.theoriesRoutes(router: Router) {
     router.apply {
         get("/theories").coroutineHandlerEither {
-            this@theoriesRoutes.getAllTheoriesIndexUseCase()
+            getAllTheoriesIndexUseCase()
                 .execute()
                 .mapT { (name, version) ->
                     "/theories/$name/versions/$version"
@@ -28,13 +28,11 @@ fun TheoriesGateway.theoriesRoutes(router: Router) {
         post("/theories")
             .handler(BodyHandler.create())
             .coroutineHandlerEither(successCode = HTTPStatusCode.CREATED) {
-                this@theoriesRoutes
-                    .createTheoryUseCase(it.bodyAsJson["name"], it.bodyAsJson["value"])
+                createTheoryUseCase(it.bodyAsJson["name"], it.bodyAsJson["value"])
                     .execute()
             }
         get("/theories/:name").coroutineHandlerEither {
-            this@theoriesRoutes
-                .getTheoryByNameUseCase(it.pathParam("name")).execute()
+            getTheoryByNameUseCase(it.pathParam("name")).execute()
         }
 
         patch("/theories/:name")

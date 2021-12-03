@@ -8,7 +8,7 @@ interface UseCase<E, A> {
     suspend fun execute(): Either<E, A>
 
     companion object {
-        fun <E, A>of(tag: String, execute: suspend () -> Either<E, A>): UseCase<E, A> =
+        fun <E, A> of(tag: String, execute: suspend () -> Either<E, A>): UseCase<E, A> =
             object : UseCase<E, A> {
                 override fun tag(): String = tag
 

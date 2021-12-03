@@ -13,7 +13,7 @@ private val defaultTheory = Theory(
     value = """
                 parent(goku, gohan).
                 parent(goku, goten).
-            """.trimIndent()
+    """.trimIndent()
 )
 
 data class InMemoryDatabase(
@@ -62,7 +62,6 @@ class InMemoryTheoriesGateway(private var inMemoryDatabase: InMemoryDatabase) : 
             }
             .mapLeft { NotFoundException(name, "Couldn't find Theory named $name at version $version.") }
 
-
     private fun List<Pair<String, NonEmptyList<Theory>>>.combinations(): List<Pair<String, Int>> =
         this.toList()
             .flatMap { (key, theories) ->
@@ -73,13 +72,16 @@ class InMemoryTheoriesGateway(private var inMemoryDatabase: InMemoryDatabase) : 
         Either.fromNullable(inMemoryDatabase.theories[name])
             .mapLeft { NotFoundException(name, "Couldn't find Theory named $name.") }
 
-
     private fun updateTheoriesDatabase(theory: Theory): Theory =
         theory.apply {
             inMemoryDatabase = inMemoryDatabase.run {
-                copy(theories = theories +
-                    (name to
-                        (theories[name]?.plus(theory) ?: nonEmptyListOf(theory))))
+                copy(
+                    theories = theories +
+                        (
+                            name to
+                                (theories[name]?.plus(theory) ?: nonEmptyListOf(theory))
+                            )
+                )
             }
         }
 

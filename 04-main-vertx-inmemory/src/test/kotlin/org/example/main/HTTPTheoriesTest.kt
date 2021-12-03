@@ -7,14 +7,10 @@ import io.vertx.core.Vertx
 import io.vertx.kotlin.core.json.*
 import io.vertx.kotlin.coroutines.await
 import kotlinx.coroutines.test.runTest
-import org.example.delivery.Controller
 import org.example.delivery.Controller.Companion.makeController
 import org.example.delivery.DependencyGraph
 import org.example.delivery.httpclient.*
-import org.example.gateway.InMemoryDatabase
-import org.example.gateway.InMemoryTheoriesGateway
 import org.example.main.delivery.make
-
 
 class HTTPTheoriesTest : FunSpec({
 
@@ -73,12 +69,14 @@ class HTTPTheoriesTest : FunSpec({
         test("the theories index must be updated") {
             client.get("/theories")
                 .flatMap { it.body() }
-                .map { it.toJson() shouldBe json {
-                    array(
-                        "/theories/default/versions/0",
-                        "/theories/myTheory/versions/0"
-                    )
-                } }
+                .map {
+                    it.toJson() shouldBe json {
+                        array(
+                            "/theories/default/versions/0",
+                            "/theories/myTheory/versions/0"
+                        )
+                    }
+                }
                 .await()
         }
         test("it can be retrieved at its URI") {
@@ -127,10 +125,12 @@ class HTTPTheoriesTest : FunSpec({
                     it.body()
                 }
                 .map {
-                    it.toJsonArray() shouldBe json { array(
-                        "/theories/myTheory/versions/0",
-                        "/theories/myTheory/versions/1",
-                    ) }
+                    it.toJsonArray() shouldBe json {
+                        array(
+                            "/theories/myTheory/versions/0",
+                            "/theories/myTheory/versions/1",
+                        )
+                    }
                 }
                 .await()
         }
@@ -160,12 +160,13 @@ class HTTPTheoriesTest : FunSpec({
             client.get("/theories")
                 .flatMap { it.body() }
                 .map {
-                    it.toJson() shouldBe json { array(
-                        "/theories/default/versions/0"
-                    ) }
+                    it.toJson() shouldBe json {
+                        array(
+                            "/theories/default/versions/0"
+                        )
+                    }
                 }
                 .await()
         }
     }
-
 })

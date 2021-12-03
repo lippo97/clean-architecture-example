@@ -1,6 +1,10 @@
 package org.example.gateway
 
-import arrow.core.*
+import arrow.core.Either
+import arrow.core.NonEmptyList
+import arrow.core.flatMap
+import arrow.core.nonEmptyListOf
+import arrow.core.right
 import org.example.UCException
 import org.example.UCException.DuplicateIdentifierException
 import org.example.UCException.NotFoundException
@@ -19,6 +23,12 @@ private val defaultTheory = Theory(
 data class InMemoryDatabase(
     val theories: Map<String, NonEmptyList<Theory>> = mapOf("default" to nonEmptyListOf(defaultTheory))
 )
+
+private fun List<Pair<String, NonEmptyList<Theory>>>.combinations(): List<Pair<String, Int>> =
+    this.toList()
+        .flatMap { (key, theories) ->
+            theories.map { Pair(key, it.version) }
+        }
 
 class InMemoryTheoriesGateway(private var inMemoryDatabase: InMemoryDatabase) : TheoriesGateway {
     override suspend fun getTheoriesIndex(): Either<Nothing, List<Pair<String, Int>>> =
@@ -61,12 +71,6 @@ class InMemoryTheoriesGateway(private var inMemoryDatabase: InMemoryDatabase) : 
                 Either.fromNullable(theories.find { it.version == version })
             }
             .mapLeft { NotFoundException(name, "Couldn't find Theory named $name at version $version.") }
-
-    private fun List<Pair<String, NonEmptyList<Theory>>>.combinations(): List<Pair<String, Int>> =
-        this.toList()
-            .flatMap { (key, theories) ->
-                theories.map { Pair(key, it.version) }
-            }
 
     private fun getTheoriesFromDatabase(name: String): Either<NotFoundException, NonEmptyList<Theory>> =
         Either.fromNullable(inMemoryDatabase.theories[name])

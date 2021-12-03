@@ -1,3 +1,4 @@
+@file:Suppress("all")
 package org.example.rbac
 
 enum class Role {

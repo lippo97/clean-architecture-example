@@ -4,13 +4,18 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.ints.shouldBeExactly
 import io.kotest.matchers.shouldBe
 import io.vertx.core.Vertx
-import io.vertx.kotlin.core.json.*
+import io.vertx.kotlin.core.json.array
+import io.vertx.kotlin.core.json.get
+import io.vertx.kotlin.core.json.json
+import io.vertx.kotlin.core.json.obj
 import io.vertx.kotlin.coroutines.await
 import kotlinx.coroutines.test.runTest
 import org.example.delivery.Controller.Companion.makeController
 import org.example.delivery.DependencyGraph
-import org.example.delivery.httpclient.*
-import org.example.main.delivery.make
+import org.example.delivery.httpclient.delete
+import org.example.delivery.httpclient.get
+import org.example.delivery.httpclient.patch
+import org.example.delivery.httpclient.post
 
 class HTTPTheoriesTest : FunSpec({
 

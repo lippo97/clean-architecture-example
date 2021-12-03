@@ -2,6 +2,7 @@ package org.example.delivery
 
 import io.vertx.core.http.HttpServerResponse
 
+@Suppress("MagicNumber")
 enum class HTTPStatusCode(val code: Int) {
     OK(200),
     CREATED(201),

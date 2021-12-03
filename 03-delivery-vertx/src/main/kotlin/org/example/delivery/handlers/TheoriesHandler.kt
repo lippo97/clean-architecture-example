@@ -8,7 +8,12 @@ import org.example.delivery.HTTPStatusCode
 import org.example.delivery.coroutineHandlerEither
 import org.example.delivery.parseInt
 import org.example.gateway.TheoriesGateway
-import org.example.usecases.*
+import org.example.usecases.createTheoryUseCase
+import org.example.usecases.deleteTheoryUseCase
+import org.example.usecases.getAllTheoriesIndexUseCase
+import org.example.usecases.getTheoryByNameAndVersionUseCase
+import org.example.usecases.getTheoryByNameUseCase
+import org.example.usecases.updateTheoryUseCase
 import org.example.utils.either.mapT
 
 fun TheoriesGateway.theoriesRoutes(router: Router) {
